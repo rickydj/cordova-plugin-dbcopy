@@ -165,16 +165,17 @@ public class sqlDB extends CordovaPlugin {
             InputStream myInput = new FileInputStream(source);
             OutputStream myOutput = new FileOutputStream(destination);
             byte[] buffer = new byte[1024];
-            while ((myInput.read(buffer)) > -1) {
-                myOutput.write(buffer);
+            int length;
+            while ((length = myInput.read(buffer)) > 0) {
+                myOutput.write(buffer, 0, length);
             }
-
-            myOutput.flush();
-            myOutput.close();
-            myInput.close();
             sendPluginResponse(200, "DB Copied Successfully", false, callbackContext);
         } catch (IOException e) {
             sendPluginResponse(400, e.getMessage(), true, callbackContext);
+        }
+        finally {
+            myInput.close();
+            myOutput.close();
         }
     }
 
